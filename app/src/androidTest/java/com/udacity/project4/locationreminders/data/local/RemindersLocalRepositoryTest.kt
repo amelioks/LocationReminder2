@@ -3,7 +3,6 @@ package com.udacity.project4.locationreminders.data.local
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
@@ -16,7 +15,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
+import androidx.test.runner.AndroidJUnit4
 import org.junit.runner.RunWith
 
 @ExperimentalCoroutinesApi
@@ -25,6 +24,24 @@ import org.junit.runner.RunWith
 @MediumTest
 class RemindersLocalRepositoryTest {
 
-//    TODO: Add testing implementation to the RemindersLocalRepository.kt
+    // Executes each task synchronously using Architecture Components.
+    @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
+
+    private lateinit var remindersDatabase: RemindersDatabase
+    private lateinit var reminderRepository: RemindersLocalRepository
+
+    @Before
+    fun setupLocalRepository() {
+            remindersDatabase = Room.inMemoryDatabaseBuilder(
+                ApplicationProvider.getApplicationContext(),
+                RemindersDatabase::class.java
+            ).allowMainThreadQueries()
+                .build()
+            reminderRepository =
+                RemindersLocalRepository(
+                    remindersDatabase.reminderDao(), Dispatchers.Main
+                )
+    }
 
 }
