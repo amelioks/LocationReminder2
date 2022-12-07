@@ -16,6 +16,7 @@ import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
+import java.util.*
 
 
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
@@ -66,6 +67,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         map.addMarker(MarkerOptions().position(DEFAULT_LAT_LNG))
         //source: https://learn.udacity.com/nanodegrees/nd940/parts/cd0638/lessons/cd348783-4ee1-4016-aeea-b4dae2b3f5c0/concepts/acf30890-e9e1-4837-9bab-ab6a8df0ecf5
         setPoiClick(map)
+        //source: https://learn.udacity.com/nanodegrees/nd940/parts/cd0638/lessons/cd348783-4ee1-4016-aeea-b4dae2b3f5c0/concepts/572e7a2c-0d42-4b30-90d3-153d83f48e4e
+        addMapMarker(map)
     }
 
     private fun setPoiClick(map: GoogleMap) {
@@ -85,6 +88,25 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
         )
         selectedLocationMarker!!.showInfoWindow()
+    }
+
+    private fun addMapMarker(map: GoogleMap) {
+        map.setOnMapLongClickListener { latLng ->
+            val snippet = String.format(
+                Locale.getDefault(),
+                "Lat: %1$.5f, Long: %2$.5f",
+                latLng.latitude,
+                latLng.longitude
+            )
+            selectedLocationMarker?.remove()
+            selectedLocationMarker = map.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title(getString(R.string.dropped_pin))
+                    .snippet(snippet)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+            )
+        }
     }
 
     private fun onLocationSelected() {
