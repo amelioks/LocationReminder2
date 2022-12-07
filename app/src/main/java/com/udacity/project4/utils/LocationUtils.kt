@@ -2,13 +2,19 @@ package com.udacity.project4.utils
 
 import android.Manifest
 import android.annotation.TargetApi
+import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 
 
 val runningQOrLater = android.os.Build.VERSION.SDK_INT >=
         android.os.Build.VERSION_CODES.Q
+
+private const val REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE = 33
+private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
 
 @TargetApi(29)
 fun Context.fineAndCoarseLocationPermissionGranted(): Boolean {
@@ -41,4 +47,21 @@ fun Context.foregroundAndBackgroundLocationPermissionGranted(): Boolean {
             true
         }
     return backgroundPermissionGranted && fineAndCoarseLocationPermissionGranted()
+}
+
+@TargetApi(29)
+fun Fragment.requestForegroundAndBackgroundLocationPermissions() {
+    var permissionsArray = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+    val requestCode = when {
+        runningQOrLater -> {
+            permissionsArray += Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE
+        }
+        else -> REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
+    }
+    Log.d(ContentValues.TAG, "Request foreground only location permission")
+    requestPermissions(
+        permissionsArray,
+        requestCode
+    )
 }
