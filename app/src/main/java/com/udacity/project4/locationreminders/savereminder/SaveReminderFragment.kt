@@ -43,6 +43,7 @@ class SaveReminderFragment : BaseFragment() {
 
     }
 
+    // A PendingIntent for the Broadcast Receiver that handles geofence transitions
     private val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(requireContext(), GeofenceBroadcastReceiver::class.java)
         intent.action = ACTION_GEOFENCE_EVENT
@@ -58,6 +59,8 @@ class SaveReminderFragment : BaseFragment() {
 
         setDisplayHomeAsUpEnabled(true)
         binding.viewModel = _viewModel
+
+        //main entry point for interacting with the geofencing APIs
         geofencingClient = LocationServices.getGeofencingClient(requireActivity())
 
         return binding.root
@@ -87,12 +90,14 @@ class SaveReminderFragment : BaseFragment() {
                 longitude
             )
 
+            //validating input data
             if (_viewModel.validateEnteredData(reminderDataItem)) {
                 checkPermissionAndStartGeofencing()
             }
         }
     }
 
+    //Called to check permissions and if granted, start geofencing
     private fun checkPermissionAndStartGeofencing() {
         if (requireActivity().foregroundAndBackgroundLocationPermissionGranted()) {
             checkDeviceLocationSettingsAndStartGeofence()
@@ -101,6 +106,7 @@ class SaveReminderFragment : BaseFragment() {
         }
     }
 
+    //Check Device Location and start geofence
     private fun checkDeviceLocationSettingsAndStartGeofence(resolve: Boolean = true) {
         val locationRequest = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_LOW_POWER
@@ -137,6 +143,8 @@ class SaveReminderFragment : BaseFragment() {
         }
     }
 
+    // add new geofence
+    // save reminder and navigates back
     @SuppressLint("MissingPermission")
     private fun addNewGeofence() {
         val geofence = Geofence.Builder()
@@ -172,6 +180,7 @@ class SaveReminderFragment : BaseFragment() {
         _viewModel.onClear()
     }
 
+    // Callback for the result from requesting permissions.
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
