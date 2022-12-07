@@ -41,5 +41,16 @@ class SaveReminderViewModelTest {
         )
     }
 
+    private fun createFakeErrorReminderDataItem(): ReminderDataItem {
+        return ReminderDataItem(
+            "title todo",
+            "description todo",
+            "",
+            100.00,
+            50.00
+        )
+    }
+
+
 
 }
