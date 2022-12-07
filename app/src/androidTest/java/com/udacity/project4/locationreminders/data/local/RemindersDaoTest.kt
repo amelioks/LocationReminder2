@@ -40,5 +40,7 @@ class RemindersDaoTest {
         ).build()
     }
 
+    @After
+    fun closeDb() = remindersDatabase.close()
 
 }
