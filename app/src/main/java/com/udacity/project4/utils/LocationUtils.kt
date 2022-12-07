@@ -16,6 +16,7 @@ val runningQOrLater = android.os.Build.VERSION.SDK_INT >=
 private const val REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE = 33
 private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
 
+//Check if fine background location permission granted
 @TargetApi(29)
 fun Context.fineAndCoarseLocationPermissionGranted(): Boolean {
     val fineLocationGranted = ActivityCompat.checkSelfPermission(
@@ -35,6 +36,7 @@ fun Context.fineAndCoarseLocationPermissionGranted(): Boolean {
     return fineLocationGranted && coarseLocationGranted
 }
 
+//Check if foreground and background location permission granted
 @TargetApi(29)
 fun Context.foregroundAndBackgroundLocationPermissionGranted(): Boolean {
     val backgroundPermissionGranted =
@@ -49,6 +51,7 @@ fun Context.foregroundAndBackgroundLocationPermissionGranted(): Boolean {
     return backgroundPermissionGranted && fineAndCoarseLocationPermissionGranted()
 }
 
+// Checks if users have given their location and sets location enabled if so
 @TargetApi(29)
 fun Fragment.requestForegroundAndBackgroundLocationPermissions() {
     var permissionsArray = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
