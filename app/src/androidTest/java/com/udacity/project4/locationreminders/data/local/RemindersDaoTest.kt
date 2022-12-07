@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import kotlinx.coroutines.ExperimentalCoroutinesApi;
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -58,6 +59,23 @@ class RemindersDaoTest {
         val result: ReminderDTO? = remindersDatabase.reminderDao().getReminderById(reminder.id)
 
         assertThat(result, `is`(reminder))
+    }
+
+    @Test
+    fun deleteReminderAndGetById() = runBlocking {
+        val reminder = ReminderDTO(
+            "Title todo",
+            "Description todo",
+            "Location todo",
+            10.0,
+            20.0)
+        val id = reminder.id
+        remindersDatabase.reminderDao().saveReminder(reminder)
+        remindersDatabase.reminderDao().deleteAllReminders()
+
+        val result = remindersDatabase.reminderDao().getReminderById(id)
+
+        assertThat(result, `is`(CoreMatchers.nullValue()))
     }
 
 }
