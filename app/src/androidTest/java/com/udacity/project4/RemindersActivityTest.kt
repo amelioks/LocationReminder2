@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.udacity.project4.locationreminders.RemindersActivity
@@ -14,6 +15,7 @@ import com.udacity.project4.locationreminders.reminderslist.RemindersListViewMod
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.util.DataBindingIdlingResource
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -38,6 +40,7 @@ class RemindersActivityTest :
      * at this step we will initialize Koin related code to be able to use it in out testing.
      */
 
+    // provides reference to activity from activity scenario
     private fun getActivity(activityScenario: ActivityScenario<RemindersActivity>): Activity? {
         var activity: Activity? = null
         activityScenario.onActivity {
@@ -77,6 +80,17 @@ class RemindersActivityTest :
         runBlocking {
             repository.deleteAllReminders()
         }
+    }
+    //Idling resources tell that the app is idle or busy
+    @Before
+    fun registerIdlingResource() {
+        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
+    }
+
+    //Unregister your idling resource so it can be garbage collected and does not leak any memory.
+    @After
+    fun unregisterIdlingResource() {
+        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 
 
