@@ -16,6 +16,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import androidx.test.runner.AndroidJUnit4
+import org.junit.Test
 import org.junit.runner.RunWith
 
 @ExperimentalCoroutinesApi
@@ -43,5 +44,31 @@ class RemindersLocalRepositoryTest {
                     remindersDatabase.reminderDao(), Dispatchers.Main
                 )
     }
+
+    @Test
+    fun saveReminder_RetrievesReminder() = runBlocking{
+            val data = ReminderDTO(
+                "title todo",
+                "description todo",
+                "location todo",
+                100.00,
+                50.00
+            )
+            reminderRepository.saveReminder(data)
+            val result = reminderRepository.getReminder(data.id)
+
+            result as Result.Success
+            assertThat(result.data != null, `is`(true))
+
+            val loadedData = result.data
+            assertThat(loadedData.id, `is`(data.id))
+            assertThat(loadedData.title, `is`(data.title))
+            assertThat(loadedData.description, `is`(data.description))
+            assertThat(loadedData.location, `is`(data.location))
+            assertThat(loadedData.latitude, `is`(data.latitude))
+            assertThat(loadedData.longitude, `is`(data.longitude))
+        }
+
+
 
 }
