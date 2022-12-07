@@ -57,6 +57,10 @@ class SaveReminderFragment : BaseFragment() {
                 latitude,
                 longitude
             )
+
+            if (_viewModel.validateEnteredData(reminderDataItem)) {
+                checkPermissionAndStartGeofencing()
+            }
 //            TODO: use the user entered reminder details to:
 //             1) add a geofencing request
 //             2) save the reminder to the local db
