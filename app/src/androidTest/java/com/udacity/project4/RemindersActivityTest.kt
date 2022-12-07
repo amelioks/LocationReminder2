@@ -138,7 +138,22 @@ class RemindersActivityTest :
         activityScenario.close()
     }
 
+    @Test
+    fun addNewReminderNoLocation_ShowsSnackbar() = runBlocking {
+        val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+        onView(ViewMatchers.withId(R.id.addReminderFAB)).perform(click())
+        onView(ViewMatchers.withId(R.id.reminderTitle)).perform(replaceText("Title todo"))
+        onView(ViewMatchers.withId(R.id.reminderDescription)).perform(replaceText("Description todo"))
+        onView(ViewMatchers.withId(R.id.button_saveReminder)).perform(click())
+        onView(
+            CoreMatchers.allOf(
+                ViewMatchers.withId(com.google.android.material.R.id.snackbar_text),
+                withText(R.string.err_select_location)
+            )
+        ).check(matches(isDisplayed()))
 
-//    TODO: add End to End testing to the app
+        activityScenario.close()
+    }
 
 }
