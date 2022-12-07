@@ -16,8 +16,9 @@ class FakeDataSource : ReminderDataSource {
         return Result.Success(ArrayList(reminders))
     }
 
+    //add reminder to fake data source
     override suspend fun saveReminder(reminder: ReminderDTO) {
-       //
+        reminders?.add(reminder)
     }
 
     override suspend fun getReminder(id: String): Result<ReminderDTO> {
