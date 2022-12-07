@@ -2,8 +2,12 @@ package com.udacity.project4.locationreminders.savereminder.selectreminderlocati
 
 
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -15,6 +19,7 @@ import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
+import com.udacity.project4.utils.fineAndCoarseLocationPermissionGranted
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
 import java.util.*
@@ -23,6 +28,7 @@ import java.util.*
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
     companion object {
+        private const val REQUEST_LOCATION_PERMISSION = 1
         private val DEFAULT_LAT_LNG = LatLng(37.422160, -122.084270)
     }
 
@@ -72,6 +78,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         setPoiClick(map)
         addMapMarker(map)
         setMapStyle(map)
+        enableMapLocation()
     }
 
     private fun setPoiClick(map: GoogleMap) {
@@ -153,5 +160,17 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             true
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    @SuppressLint("MissingPermission")
+    fun enableMapLocation() {
+        if (requireContext().fineAndCoarseLocationPermissionGranted()) {
+            map.setMyLocationEnabled(true)
+        } else {
+            requestPermissions(
+                arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_LOCATION_PERMISSION
+            )
+        }
     }
 }
