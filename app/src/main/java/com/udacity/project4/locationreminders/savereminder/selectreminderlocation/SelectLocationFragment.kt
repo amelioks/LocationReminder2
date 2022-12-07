@@ -47,6 +47,10 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             childFragmentManager.findFragmentById(R.id.map_selectlocation) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        binding.buttonSaveLocation.setOnClickListener {
+            onLocationSelected()
+        }
+
 //        TODO: add the map setup implementation
 //        TODO: zoom to the user location after taking his permission
 //        TODO: add style to the map
