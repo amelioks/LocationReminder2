@@ -127,4 +127,14 @@ class ReminderListFragmentTest {
         onView(ViewMatchers.withText("Title todo2")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         onView(ViewMatchers.withText("Title todo3")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
+
+    @Test
+    fun emptyDatabase_noDataShows() {
+        runBlocking {
+            reminderRepository.deleteAllReminders()
+        }
+        launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+        onView(withId(R.id.noDataTextView)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
+
 }
