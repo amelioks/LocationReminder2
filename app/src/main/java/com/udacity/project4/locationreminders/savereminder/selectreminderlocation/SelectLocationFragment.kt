@@ -66,6 +66,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         map.addMarker(MarkerOptions().position(DEFAULT_LAT_LNG))
         setPoiClick(map)
         addMapMarker(map)
+        setMapStyle(map)
     }
 
     private fun setPoiClick(map: GoogleMap) {
@@ -104,6 +105,15 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
             )
         }
+    }
+
+    private fun setMapStyle(map: GoogleMap) {
+        map.setMapStyle(
+            MapStyleOptions.loadRawResourceStyle(
+                requireContext(),
+                R.raw.map_style
+            )
+        )
     }
 
     private fun onLocationSelected() {
