@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.udacity.project4.locationreminders.data.FakeDataSource
+import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
@@ -27,6 +28,16 @@ class SaveReminderViewModelTest {
         saveReminderViewModel = SaveReminderViewModel(
             ApplicationProvider.getApplicationContext(),
             fakeReminderDataSource
+        )
+    }
+
+    private fun createFakeReminderDataItem(): ReminderDataItem {
+        return ReminderDataItem(
+            "title todo",
+            "description todo",
+            "location todo",
+            100.00,
+            50.00
         )
     }
 
