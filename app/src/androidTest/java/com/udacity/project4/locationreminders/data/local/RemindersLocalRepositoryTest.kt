@@ -16,6 +16,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import androidx.test.runner.AndroidJUnit4
+import com.udacity.project4.util.wrapEspressoIdlingResource
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -34,6 +35,7 @@ class RemindersLocalRepositoryTest {
 
     @Before
     fun setupLocalRepository() {
+        wrapEspressoIdlingResource{
             remindersDatabase = Room.inMemoryDatabaseBuilder(
                 ApplicationProvider.getApplicationContext(),
                 RemindersDatabase::class.java
@@ -43,10 +45,12 @@ class RemindersLocalRepositoryTest {
                 RemindersLocalRepository(
                     remindersDatabase.reminderDao(), Dispatchers.Main
                 )
+        }
     }
 
     @Test
     fun saveReminder_RetrievesReminder() = runBlocking{
+        wrapEspressoIdlingResource{
             val data = ReminderDTO(
                 "title todo",
                 "description todo",
@@ -68,13 +72,16 @@ class RemindersLocalRepositoryTest {
             assertThat(loadedData.latitude, `is`(data.latitude))
             assertThat(loadedData.longitude, `is`(data.longitude))
         }
+    }
 
     @Test
     fun reminderNotFound_returnError() = runBlocking {
+        wrapEspressoIdlingResource{
             val result = reminderRepository.getReminder("123")
             val error = (result is Result.Error)
             assertThat(error, `is`(true))
         }
+    }
 
     @After
     fun cleanUp() = remindersDatabase.close()
