@@ -173,4 +173,24 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             )
         }
     }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            REQUEST_LOCATION_PERMISSION -> {
+                if (grantResults.isNotEmpty()
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
+                    enableMapLocation()
+                } else {
+                    Toast.makeText(context, "Permission is not granted!", Toast.LENGTH_SHORT).show()
+                }
+                return
+            }
+        }
+    }
 }
