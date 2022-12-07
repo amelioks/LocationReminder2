@@ -21,8 +21,10 @@ class FakeDataSource : ReminderDataSource {
         reminders?.add(reminder)
     }
 
+    //get a reminder by id
     override suspend fun getReminder(id: String): Result<ReminderDTO> {
-
+        reminders.firstOrNull { it.id == id }?.let { return Result.Success(it) }
+        return Result.Error("Reminder not found")
     }
 
     override suspend fun deleteAllReminders() {
