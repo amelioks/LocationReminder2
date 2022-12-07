@@ -60,14 +60,11 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        //source: https://learn.udacity.com/nanodegrees/nd940/parts/cd0638/lessons/cd348783-4ee1-4016-aeea-b4dae2b3f5c0/concepts/03656263-2bdc-4547-9f1e-39d40cc36b9a
         map = googleMap
         val zoomLevel = 15f
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LAT_LNG, zoomLevel))
         map.addMarker(MarkerOptions().position(DEFAULT_LAT_LNG))
-        //source: https://learn.udacity.com/nanodegrees/nd940/parts/cd0638/lessons/cd348783-4ee1-4016-aeea-b4dae2b3f5c0/concepts/acf30890-e9e1-4837-9bab-ab6a8df0ecf5
         setPoiClick(map)
-        //source: https://learn.udacity.com/nanodegrees/nd940/parts/cd0638/lessons/cd348783-4ee1-4016-aeea-b4dae2b3f5c0/concepts/572e7a2c-0d42-4b30-90d3-153d83f48e4e
         addMapMarker(map)
     }
 
@@ -121,7 +118,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        //source: https://learn.udacity.com/nanodegrees/nd940/parts/cd0638/lessons/cd348783-4ee1-4016-aeea-b4dae2b3f5c0/concepts/219f1043-2d39-4d21-8db6-3eee66c97016
         R.id.normal_map -> {
             map.mapType = GoogleMap.MAP_TYPE_NORMAL
             true
