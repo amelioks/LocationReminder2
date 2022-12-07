@@ -28,3 +28,17 @@ fun Context.fineAndCoarseLocationPermissionGranted(): Boolean {
         }
     return fineLocationGranted && coarseLocationGranted
 }
+
+@TargetApi(29)
+fun Context.foregroundAndBackgroundLocationPermissionGranted(): Boolean {
+    val backgroundPermissionGranted =
+        if (runningQOrLater) {
+            PackageManager.PERMISSION_GRANTED ==
+                    ActivityCompat.checkSelfPermission(
+                        this, Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                    )
+        } else {
+            true
+        }
+    return backgroundPermissionGranted && fineAndCoarseLocationPermissionGranted()
+}
