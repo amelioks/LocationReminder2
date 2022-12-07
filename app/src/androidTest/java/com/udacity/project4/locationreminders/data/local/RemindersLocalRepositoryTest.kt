@@ -69,6 +69,14 @@ class RemindersLocalRepositoryTest {
             assertThat(loadedData.longitude, `is`(data.longitude))
         }
 
+    @Test
+    fun reminderNotFound_returnError() = runBlocking {
+            val result = reminderRepository.getReminder("123")
+            val error = (result is Result.Error)
+            assertThat(error, `is`(true))
+        }
+
+
 
 
 }
