@@ -10,11 +10,14 @@ import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.udacity.project4.R
 import com.udacity.project4.locationreminders.data.ReminderDataSource
+import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
@@ -84,5 +87,44 @@ class ReminderListFragmentTest {
         }
         onView(withId(R.id.addReminderFAB)).perform(click())
         verify(navController).navigate(ReminderListFragmentDirections.toSaveReminder())
+    }
+
+    @Test
+    fun listRemindersInDB_UIShowsSameList() {
+        runBlocking {
+            reminderRepository.saveReminder(
+                ReminderDTO(
+                    "Title todo1",
+                    "Description todo1",
+                    "Location todo1",
+                    100.0,
+                    50.0
+                )
+            )
+            reminderRepository.saveReminder(
+                ReminderDTO(
+                    "Title todo2",
+                    "Description todo2",
+                    "Location todo2",
+                    50.0,
+                    100.0
+                )
+            )
+            reminderRepository.saveReminder(
+                ReminderDTO(
+                    "Title todo3",
+                    "Description todo3",
+                    "Location todo3",
+                    100.0,
+                    100.0
+                )
+            )
+        }
+
+        launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+
+        onView(ViewMatchers.withText("Title todo1")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withText("Title todo2")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withText("Title todo3")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 }
