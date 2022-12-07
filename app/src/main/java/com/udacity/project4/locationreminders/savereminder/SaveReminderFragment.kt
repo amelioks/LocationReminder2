@@ -1,6 +1,8 @@
 package com.udacity.project4.locationreminders.savereminder
 
+import android.app.PendingIntent
 import android.content.ContentValues
+import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -10,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
@@ -18,6 +21,7 @@ import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSaveReminderBinding
+import com.udacity.project4.locationreminders.geofence.GeofenceBroadcastReceiver
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.utils.REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE
 import com.udacity.project4.utils.foregroundAndBackgroundLocationPermissionGranted
@@ -33,6 +37,14 @@ class SaveReminderFragment : BaseFragment() {
 
     companion object {
         private const val REQUEST_TURN_DEVICE_LOCATION_ON = 29
+        private const val ACTION_GEOFENCE_EVENT =
+            "SaveReminderFragment.project4.action.ACTION_GEOFENCE_EVENT"
+    }
+
+    private val geofencePendingIntent: PendingIntent by lazy {
+        val intent = Intent(requireContext(), GeofenceBroadcastReceiver::class.java)
+        intent.action = ACTION_GEOFENCE_EVENT
+        PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     override fun onCreateView(
