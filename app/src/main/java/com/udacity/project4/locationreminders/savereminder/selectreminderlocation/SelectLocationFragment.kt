@@ -1,7 +1,5 @@
 package com.udacity.project4.locationreminders.savereminder.selectreminderlocation
 
-
-
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
@@ -23,7 +21,6 @@ import com.udacity.project4.utils.fineAndCoarseLocationPermissionGranted
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
 import java.util.*
-
 
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
@@ -50,25 +47,19 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         setHasOptionsMenu(true)
         setDisplayHomeAsUpEnabled(true)
 
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.map_selectlocation) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        //enable button save when save location and navigates back
         binding.buttonSaveLocation.setOnClickListener {
             onLocationSelected()
         }
-
-//        TODO: add the map setup implementation
-//        TODO: zoom to the user location after taking his permission
-//        TODO: add style to the map
-//        TODO: put a marker to location that the user selected
-
-
-//        TODO: call this function after the user confirms on the selected location
-
         return binding.root
     }
 
+    //to set Map
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         val zoomLevel = 15f
@@ -80,12 +71,14 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         enableMapLocation()
     }
 
+    //add marker on clicked Poi
     private fun setPoiClick(map: GoogleMap) {
         map.setOnPoiClickListener { poi ->
             addPoiMarker(poi)
         }
     }
 
+    //to enable add marker on Poi including details
     private fun addPoiMarker(poi: PointOfInterest) {
         //to reset marker in Poi
         map.clear()
@@ -99,6 +92,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         selectedLocationMarker!!.showInfoWindow()
     }
 
+    // Called when user makes a long press gesture on the map to add mark
     private fun addMapMarker(map: GoogleMap) {
         map.setOnMapLongClickListener { latLng ->
             val snippet = String.format(
@@ -118,6 +112,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
+    // Setting Map style from resource
     private fun setMapStyle(map: GoogleMap) {
         map.setMapStyle(
             MapStyleOptions.loadRawResourceStyle(
@@ -127,6 +122,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         )
     }
 
+    // Send back the selected location details to the view model and navigate back
     private fun onLocationSelected() {
         selectedLocationMarker?.let {
             _viewModel.reminderSelectedLocationStr.value = it.title
@@ -136,11 +132,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         findNavController().popBackStack()
     }
 
-
+    // to inflate map options
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.map_options, menu)
     }
 
+    // Called whenever an item in your options menu is selected.
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.normal_map -> {
             map.mapType = GoogleMap.MAP_TYPE_NORMAL
@@ -161,6 +158,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         else -> super.onOptionsItemSelected(item)
     }
 
+    // Checks if users have given their location and sets location enabled if so.
     @SuppressLint("MissingPermission")
     fun enableMapLocation() {
         if (requireContext().fineAndCoarseLocationPermissionGranted()) {
@@ -173,19 +171,28 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
+    // Callback for the result from requesting permissions.
+    // This method is invoked for every call on requestPermissions(android.app.Activity, String[],
+    // int).
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
         grantResults: IntArray
     ) {
+        // Check if location permissions are granted and if so enable the
+        // location data layer.
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             REQUEST_LOCATION_PERMISSION -> {
+                // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty()
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
                 ) {
+                    // permission was granted.
                     enableMapLocation()
                 } else {
+                    // permission denied.
+                    // tell the user the action is cancelled
                     Toast.makeText(context, "Permission is not granted!", Toast.LENGTH_SHORT).show()
                 }
                 return
