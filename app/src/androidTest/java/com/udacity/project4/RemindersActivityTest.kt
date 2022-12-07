@@ -132,7 +132,6 @@ class RemindersActivityTest :
                 )
             )
 
-        onView(withText(R.string.reminder_saved)).check(matches(isDisplayed()))
         onView(withText("Title todo")).check(matches(isDisplayed()))
 
         activityScenario.close()
