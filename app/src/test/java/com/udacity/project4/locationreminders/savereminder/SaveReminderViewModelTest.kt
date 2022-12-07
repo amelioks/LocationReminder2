@@ -4,11 +4,14 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.udacity.project4.locationreminders.data.FakeDataSource
+import com.udacity.project4.locationreminders.data.local.toReminderDTO
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
-
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 
 @ExperimentalCoroutinesApi
@@ -51,6 +54,14 @@ class SaveReminderViewModelTest {
         )
     }
 
+    @Test
+    fun addNewReminder_checkSaveReminderToDataSource() =
+        runBlockingTest {
+            val item = createFakeReminderDataItem()
+            saveReminderViewModel.saveReminder(item)
+            assert(fakeReminderDataSource.reminders.contains(item.toReminderDTO()))
+            Assert.assertEquals(false, saveReminderViewModel.showLoading.getOrAwaitValue())
+        }
 
 
 }
