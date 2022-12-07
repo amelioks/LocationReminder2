@@ -11,6 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.*
 import org.junit.runner.RunWith
+import org.koin.core.context.stopKoin
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -70,4 +71,9 @@ class SaveReminderViewModelTest {
             Assert.assertEquals(R.string.err_select_location, saveReminderViewModel.showSnackBarInt.getOrAwaitValue())
 
         }
+
+    @After
+    fun tearDown() {
+        stopKoin()
+    }
 }
