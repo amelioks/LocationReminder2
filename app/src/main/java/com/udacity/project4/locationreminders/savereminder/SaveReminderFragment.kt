@@ -34,6 +34,8 @@ class SaveReminderFragment : BaseFragment() {
     override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var binding: FragmentSaveReminderBinding
     private lateinit var reminderDataItem: ReminderDataItem
+    private lateinit var geofencingClient: GeofencingClient
+
 
     companion object {
         private const val REQUEST_TURN_DEVICE_LOCATION_ON = 29
