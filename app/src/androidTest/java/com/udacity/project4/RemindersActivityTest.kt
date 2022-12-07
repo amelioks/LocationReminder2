@@ -4,7 +4,17 @@ import android.app.Activity
 import android.app.Application
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.udacity.project4.locationreminders.RemindersActivity
@@ -14,9 +24,12 @@ import com.udacity.project4.locationreminders.data.local.RemindersLocalRepositor
 import com.udacity.project4.locationreminders.reminderslist.RemindersListViewModel
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.util.DataBindingIdlingResource
+import com.udacity.project4.util.monitorActivity
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.CoreMatchers
 import org.junit.After
 import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
@@ -91,6 +104,38 @@ class RemindersActivityTest :
     @After
     fun unregisterIdlingResource() {
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
+    }
+
+    @Test
+    fun addNewReminder_ShowNewReminderInReminderList() = runBlocking {
+        val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        val activity = getActivity(activityScenario)!!
+
+        onView(ViewMatchers.withId(R.id.addReminderFAB)).perform(click())
+        onView(ViewMatchers.withId(R.id.reminderTitle))
+            .perform(replaceText("Title todo"))
+        onView(ViewMatchers.withId(R.id.reminderDescription))
+            .perform(replaceText("Description todo"))
+        onView(ViewMatchers.withId(R.id.selectLocation)).perform(click())
+        onView(ViewMatchers.withId(R.id.map_selectlocation))
+            .perform(longClick())
+        onView(ViewMatchers.withId(R.id.button_saveLocation)).perform(click())
+        onView(ViewMatchers.withId(R.id.button_saveReminder)).perform(click())
+
+        onView(withText(R.string.reminder_saved))
+            .inRoot(RootMatchers.withDecorView(CoreMatchers.not(CoreMatchers.`is`(activity.window.decorView))))
+            .check(
+                matches(
+                    isDisplayed()
+                )
+            )
+
+        onView(withText(R.string.reminder_saved)).check(matches(isDisplayed()))
+        onView(withText("Title todo")).check(matches(isDisplayed()))
+
+        activityScenario.close()
     }
 
 
