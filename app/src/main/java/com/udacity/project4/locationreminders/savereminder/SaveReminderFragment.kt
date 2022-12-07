@@ -10,6 +10,8 @@ import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSaveReminderBinding
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
+import com.udacity.project4.utils.foregroundAndBackgroundLocationPermissionGranted
+import com.udacity.project4.utils.requestForegroundAndBackgroundLocationPermissions
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
 
@@ -59,6 +61,18 @@ class SaveReminderFragment : BaseFragment() {
 //             1) add a geofencing request
 //             2) save the reminder to the local db
         }
+    }
+
+    private fun checkPermissionAndStartGeofencing() {
+        if (requireActivity().foregroundAndBackgroundLocationPermissionGranted()) {
+            checkDeviceLocationSettingsAndStartGeofence()
+        } else {
+            requestForegroundAndBackgroundLocationPermissions()
+        }
+    }
+
+    fun checkDeviceLocationSettingsAndStartGeofence() {
+
     }
 
     override fun onDestroy() {
