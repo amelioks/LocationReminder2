@@ -31,7 +31,7 @@ class SaveReminderFragment : BaseFragment() {
     //Get the view model this time as a single to be shared with the another fragment
     override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var binding: FragmentSaveReminderBinding
-    private lateinit var reminderDataItem: ReminderDataItem
+    private lateinit var reminderDataItem: ReminderDataItem //to hold the reminder data to be saved
     private lateinit var geofencingClient: GeofencingClient
 
 
