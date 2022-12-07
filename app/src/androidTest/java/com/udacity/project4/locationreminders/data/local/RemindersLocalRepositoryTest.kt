@@ -76,7 +76,7 @@ class RemindersLocalRepositoryTest {
             assertThat(error, `is`(true))
         }
 
-
-
+    @After
+    fun cleanUp() = remindersDatabase.close()
 
 }
