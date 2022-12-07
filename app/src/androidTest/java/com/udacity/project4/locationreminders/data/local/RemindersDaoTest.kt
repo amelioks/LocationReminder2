@@ -5,7 +5,6 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
-import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -26,5 +25,20 @@ import org.junit.Test
 class RemindersDaoTest {
 
 //    TODO: Add testing implementation to the RemindersDao.kt
+    @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
+
+    private lateinit var remindersDatabase: RemindersDatabase
+
+    @Before
+    fun initDb() {
+        // Using an in-memory database so that the information stored here disappears when the
+        // process is killed.
+        remindersDatabase = Room.inMemoryDatabaseBuilder(
+            ApplicationProvider.getApplicationContext(),
+            RemindersDatabase::class.java
+        ).build()
+    }
+
 
 }
