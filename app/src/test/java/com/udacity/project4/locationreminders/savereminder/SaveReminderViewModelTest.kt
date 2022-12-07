@@ -64,5 +64,16 @@ class SaveReminderViewModelTest {
             Assert.assertEquals(false, saveReminderViewModel.showLoading.getOrAwaitValue())
         }
 
+    @Test
+    fun addNewIncompleteReminder_checkSaveReminderToDataSource_ReturnError() =
+        runBlockingTest {
+            val item = createFakeErrorReminderDataItem()
+            saveReminderViewModel.validateEnteredData(item)
+            Assert.assertFalse(fakeReminderDataSource.reminders.contains(item.toReminderDTO()))
+            Assert.assertEquals(R.string.err_select_location, saveReminderViewModel.showSnackBarInt.getOrAwaitValue())
+
+        }
+
+
 
 }
