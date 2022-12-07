@@ -1,15 +1,20 @@
 package com.udacity.project4.locationreminders.savereminder
 
+import android.content.ContentValues
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSaveReminderBinding
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
+import com.udacity.project4.utils.REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE
 import com.udacity.project4.utils.foregroundAndBackgroundLocationPermissionGranted
 import com.udacity.project4.utils.requestForegroundAndBackgroundLocationPermissions
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
@@ -61,9 +66,6 @@ class SaveReminderFragment : BaseFragment() {
             if (_viewModel.validateEnteredData(reminderDataItem)) {
                 checkPermissionAndStartGeofencing()
             }
-//            TODO: use the user entered reminder details to:
-//             1) add a geofencing request
-//             2) save the reminder to the local db
         }
     }
 
@@ -77,6 +79,26 @@ class SaveReminderFragment : BaseFragment() {
 
     fun checkDeviceLocationSettingsAndStartGeofence() {
 
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        Log.d(ContentValues.TAG, "onRequestPermissionResult")
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE &&
+            grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            checkDeviceLocationSettingsAndStartGeofence()
+        } else {
+            Snackbar.make(
+                binding.buttonSaveReminder,
+                R.string.location_required_error, Snackbar.LENGTH_INDEFINITE
+            ).setAction(android.R.string.ok) {
+                requestForegroundAndBackgroundLocationPermissions()
+            }.show()
+        }
     }
 
     override fun onDestroy() {
