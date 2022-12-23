@@ -77,8 +77,8 @@ class SaveReminderFragment : BaseFragment() {
 
         binding.buttonSaveReminder.setOnClickListener {
             val title = _viewModel.reminderTitle.value
-            val description = _viewModel.reminderDescription.value ?: ""
-            val location = _viewModel.reminderSelectedLocationStr.value ?: ""
+            val description = _viewModel.reminderDescription.value
+            val location = _viewModel.reminderSelectedLocationStr.value
             val latitude = _viewModel.latitude.value
             val longitude = _viewModel.longitude.value
 
