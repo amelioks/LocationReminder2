@@ -80,18 +80,20 @@ class ReminderListFragmentTest {
     }
 
     @Test
-    fun clickOnFAB_navigatesToSaveReminderFragment() {
+    fun clickOnAddReminderButton_navigatesToSaveReminderFragment() {
         val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
         val navController = mock(NavController::class.java)
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
         }
+
         onView(withId(R.id.addReminderFAB)).perform(click())
+
         verify(navController).navigate(ReminderListFragmentDirections.toSaveReminder())
     }
 
     @Test
-    fun listRemindersInDB_UIShowsSameList() {
+    fun reminderListFragment_showsCorrectListBasedOnRepository() {
         runBlocking {
             reminderRepository.saveReminder(
                 ReminderDTO(
@@ -130,11 +132,13 @@ class ReminderListFragmentTest {
     }
 
     @Test
-    fun emptyDatabase_noDataShows() {
+    fun reminderListFragment_givenEmptyRepository_showsNoData() {
         runBlocking {
             reminderRepository.deleteAllReminders()
         }
+
         launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+
         onView(withId(R.id.noDataTextView)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
