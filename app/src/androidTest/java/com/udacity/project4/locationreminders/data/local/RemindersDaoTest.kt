@@ -27,7 +27,6 @@ import org.junit.Test
 @SmallTest
 class RemindersDaoTest {
 
-//    TODO: Add testing implementation to the RemindersDao.kt
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
@@ -47,7 +46,7 @@ class RemindersDaoTest {
     fun closeDb() = remindersDatabase.close()
 
     @Test
-    fun insertReminderAndGetById() = runBlocking {
+    fun saveReminder_savesReminderDTOtoDatabaseAndRetrievableById() = runBlocking {
         val reminder = ReminderDTO(
             "Title todo",
             "Description todo",
@@ -56,13 +55,13 @@ class RemindersDaoTest {
             20.0)
 
         remindersDatabase.reminderDao().saveReminder(reminder)
-        val result: ReminderDTO? = remindersDatabase.reminderDao().getReminderById(reminder.id)
 
+        val result: ReminderDTO? = remindersDatabase.reminderDao().getReminderById(reminder.id)
         assertThat(result, `is`(reminder))
     }
 
     @Test
-    fun deleteReminderAndGetById() = runBlocking {
+    fun deleteAllReminders_removesAllSavedReminderInDatabase() = runBlocking {
         val reminder = ReminderDTO(
             "Title todo",
             "Description todo",
@@ -71,10 +70,10 @@ class RemindersDaoTest {
             20.0)
         val id = reminder.id
         remindersDatabase.reminderDao().saveReminder(reminder)
+
         remindersDatabase.reminderDao().deleteAllReminders()
 
         val result = remindersDatabase.reminderDao().getReminderById(id)
-
         assertThat(result, `is`(CoreMatchers.nullValue()))
     }
 
