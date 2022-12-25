@@ -4,6 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.udacity.project4.locationreminders.data.FakeDataSource
+import com.udacity.project4.locationreminders.data.local.toReminderDTO
+import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.locationreminders.reminderslist.RemindersListViewModel
 import com.udacity.project4.locationreminders.savereminder.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,5 +45,30 @@ class RemindersListViewModelTest {
             remindersListViewModel.loadReminders()
 
             Assert.assertEquals(message, remindersListViewModel.showSnackBar.getOrAwaitValue())
+        }
+
+    @Test
+    fun loadReminders_givenValidForm_showsReminderList() =
+        runBlockingTest {
+            val reminder1 = ReminderDataItem(
+                "Title todo1",
+                "Description todo1",
+                "Location todo1",
+                50.0,
+                50.0)
+
+            val reminder2 = ReminderDataItem(
+                "Title todo2",
+                "Description todo2",
+                "Location todo2",
+                50.0,
+                50.0)
+
+            fakeReminderDataSource.saveReminder(reminder1.toReminderDTO())
+            fakeReminderDataSource.saveReminder(reminder2.toReminderDTO())
+
+            remindersListViewModel.loadReminders()
+
+            Assert.assertEquals(listOf(reminder1,reminder2),remindersListViewModel.remindersList.getOrAwaitValue())
         }
 }
