@@ -107,7 +107,7 @@ class RemindersActivityTest :
     }
 
     @Test
-    fun addNewReminder_ShowNewReminderInReminderList() = runBlocking {
+    fun addingNewReminderFlow_givenValidForm_showsSuccessMessageAndNewReminderInReminderList() = runBlocking {
         val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
@@ -131,27 +131,26 @@ class RemindersActivityTest :
                     isDisplayed()
                 )
             )
-
         onView(withText("Title todo")).check(matches(isDisplayed()))
-
         activityScenario.close()
     }
 
     @Test
-    fun addNewReminderNoLocation_ShowsSnackbar() = runBlocking {
+    fun addingNewReminderFlow_givenInvalidForm_showsErrorMessage() = runBlocking {
         val activityScenario = ActivityScenario.launch(RemindersActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
+
         onView(ViewMatchers.withId(R.id.addReminderFAB)).perform(click())
         onView(ViewMatchers.withId(R.id.reminderTitle)).perform(replaceText("Title todo"))
         onView(ViewMatchers.withId(R.id.reminderDescription)).perform(replaceText("Description todo"))
         onView(ViewMatchers.withId(R.id.button_saveReminder)).perform(click())
+
         onView(
             CoreMatchers.allOf(
                 ViewMatchers.withId(com.google.android.material.R.id.snackbar_text),
                 withText(R.string.err_select_location)
             )
         ).check(matches(isDisplayed()))
-
         activityScenario.close()
     }
 
