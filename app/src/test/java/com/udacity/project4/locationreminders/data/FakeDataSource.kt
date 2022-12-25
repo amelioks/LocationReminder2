@@ -9,16 +9,20 @@ class FakeDataSource : ReminderDataSource {
 
     //Create a list to store reminders for the data source
     var reminders = mutableListOf<ReminderDTO>()
+    var errorMessage: String? = null
 
     //return reminders from the list
     override suspend fun getReminders(): Result<List<ReminderDTO>> {
-        reminders.let { return Result.Success(it) }
-        return Result.Success(ArrayList(reminders))
+        if (errorMessage != null) {
+            return Result.Error(errorMessage)
+        } else {
+            reminders.let { return Result.Success(it) }
+        }
     }
 
     //add reminder to fake data source
     override suspend fun saveReminder(reminder: ReminderDTO) {
-        reminders?.add(reminder)
+        reminders.add(reminder)
     }
 
     //get a reminder by id
