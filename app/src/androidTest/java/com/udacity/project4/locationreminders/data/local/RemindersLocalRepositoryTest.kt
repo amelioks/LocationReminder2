@@ -49,7 +49,7 @@ class RemindersLocalRepositoryTest {
     }
 
     @Test
-    fun saveReminder_RetrievesReminder() = runBlocking{
+    fun getReminder_retrievesCorrectSavedReminder() = runBlocking{
         wrapEspressoIdlingResource{
             val data = ReminderDTO(
                 "title todo",
@@ -59,11 +59,11 @@ class RemindersLocalRepositoryTest {
                 50.00
             )
             reminderRepository.saveReminder(data)
+
             val result = reminderRepository.getReminder(data.id)
 
             result as Result.Success
             assertThat(result.data != null, `is`(true))
-
             val loadedData = result.data
             assertThat(loadedData.id, `is`(data.id))
             assertThat(loadedData.title, `is`(data.title))
@@ -75,9 +75,12 @@ class RemindersLocalRepositoryTest {
     }
 
     @Test
-    fun reminderNotFound_returnError() = runBlocking {
+    fun getReminder_GivenInvalidReminderId_returnsError() = runBlocking {
         wrapEspressoIdlingResource{
+            reminderRepository.deleteAllReminders() //make sure the repository is empty
+
             val result = reminderRepository.getReminder("123")
+
             val error = (result is Result.Error)
             assertThat(error, `is`(true))
         }
